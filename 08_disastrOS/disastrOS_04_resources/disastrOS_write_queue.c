@@ -1,0 +1,32 @@
+#include <assert.h>
+#include <unistd.h>
+#include <stdio.h>
+#include "disastrOS.h"
+#include "disastrOS_syscalls.h"
+#include "disastrOS_structures.h"
+
+void writeQueue(){
+
+  printf("WRITE\n");
+
+	queue* q = running->syscall_args[0];
+	char* s = running->syscall_args[1];
+	int size = running->syscall_args[2];
+
+  int i=0;
+  if(q->writingSpace==0) {
+      running->syscall_retvalue=0;
+      printQueue(q);
+      return;
+  }
+  while(i<size && q->writingSpace>0){
+      q->buffer[q->writingIndex]=s[i];
+      i++;
+      q->writingIndex=(q->writingIndex+1)%100;
+      q->writingSpace--;
+      q->readingSpace++;
+  }
+  printQueue(q);
+  running->syscall_retvalue=i;
+
+}
