@@ -24,3 +24,7 @@ void internal_openResource();
 void internal_closeResource();
 
 void internal_destroyResource();
+
+void writeQueue();   //lf new system call
+
+void readQueue();   //lf new system call
