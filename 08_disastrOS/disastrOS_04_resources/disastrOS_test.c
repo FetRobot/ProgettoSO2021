@@ -3,6 +3,9 @@
 #include <poll.h>
 
 #include "disastrOS.h"
+#include "disastrOS_structures.h"
+
+queueList list;
 
 // we need this to handle the sleep state
 void sleeperFunction(void* args){
@@ -16,6 +19,55 @@ void sleeperFunction(void* args){
 void childFunction(void* args){
   printf("Hello, I am the child function %d\n",disastrOS_getpid());
   printf("I will iterate a bit, before terminating\n");
+
+  //lf ###########################################
+  //lf ############### ADDED BY ME ###############
+  //lf ############### VVVVVVVVVV ################
+
+  queue* q1 = openQueue("q1");
+  char s[64];
+  int ret=0;
+
+  int a = disastrOS_getpid();
+
+  if(a%4 == 0){
+    while(!ret){
+      ret = disastrOS_read_queue(q1,s,5);
+      printf("READ:%d\n",ret);
+      sleep(10);
+    }
+
+    ret=0;
+
+    while(!ret){
+      ret=disastrOS_write_queue(q1,"BBBBB",5);
+      printf("WRITTEN:%d\n",ret);
+      sleep(10);
+    }
+  }
+
+  else{
+    while(!ret){
+      ret=disastrOS_write_queue(q1,"BBBBB",5);
+      printf("WRITTEN:%d\n",ret);
+      sleep(10);
+    }
+
+    ret=0;
+
+    while(!ret){
+      ret=disastrOS_read_queue(q1,s,5);
+      printf("READ:%d\n",ret);
+      sleep(10);
+    }
+  }
+
+  closeQueue("q1");
+
+  //lf ############### ^^^^^^^^^^ ################
+  //lf ############### ADDED BY ME ###############
+  //lf ###########################################
+
   int type=0;
   int mode=0;
   int fd=disastrOS_openResource(disastrOS_getpid(),type,mode);
@@ -34,7 +86,7 @@ void initFunction(void* args) {
   disastrOS_printStatus();
   printf("hello, I am init and I just started\n");
   disastrOS_spawn(sleeperFunction, 0);
-  
+
 
   printf("I feel like to spawn 10 nice threads\n");
   int alive_children=0;
@@ -52,7 +104,7 @@ void initFunction(void* args) {
   disastrOS_printStatus();
   int retval;
   int pid;
-  while(alive_children>0 && (pid=disastrOS_wait(0, &retval))>=0){ 
+  while(alive_children>0 && (pid=disastrOS_wait(0, &retval))>=0){
     disastrOS_printStatus();
     printf("initFunction, child: %d terminated, retval:%d, alive: %d \n",
 	   pid, retval, alive_children);
@@ -63,6 +115,9 @@ void initFunction(void* args) {
 }
 
 int main(int argc, char** argv){
+  list=queueListInit(); //lf new
+	printQueueList();     //lf new
+  
   char* logfilename=0;
   if (argc>1) {
     logfilename=argv[1];
