@@ -24,12 +24,13 @@ void childFunction(void* args){
   //lf ############### ADDED BY ME ###############
   //lf ############### VVVVVVVVVV ################
 
-  queue* q1 = openQueue("q1");
+  queue* q1 = openQueue("q1"); //lf open the queue q1
   char s[64];
   int ret=0;
 
-  int a = disastrOS_getpid();
+  int a = disastrOS_getpid(); //lf I store the pid so different proccesses will execute different syscalls
 
+  //lf processes who are multiples of 4 read first and write after
   if(a%4 == 0){
     while(!ret){
       ret = disastrOS_read_queue(q1,s,5);
@@ -46,6 +47,7 @@ void childFunction(void* args){
     }
   }
 
+  //lf other processes write first and read after
   else{
     while(!ret){
       ret=disastrOS_write_queue(q1,"BBBBB",5);
@@ -115,9 +117,10 @@ void initFunction(void* args) {
 }
 
 int main(int argc, char** argv){
+  //lf initializing the queues' structure
   list=queueListInit(); //lf new
 	printQueueList();     //lf new
-  
+
   char* logfilename=0;
   if (argc>1) {
     logfilename=argv[1];
