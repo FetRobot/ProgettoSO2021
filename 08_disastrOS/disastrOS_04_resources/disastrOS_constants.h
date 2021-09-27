@@ -39,8 +39,8 @@
 #define DSOS_CALL_CLOSE_RESOURCE 8
 #define DSOS_CALL_DESTROY_RESOURCE 9
 #define DSOS_CALL_SHUTDOWN  10
-#define DSOS_CALL_WRITE_QUEUE  11
-#define DSOS_CALL_READ_QUEUE  12
+#define DSOS_CALL_WRITE_QUEUE  11 //lf new
+#define DSOS_CALL_READ_QUEUE  12 //lf new
 
 
 //resources
